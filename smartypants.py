@@ -575,7 +575,22 @@ def _tokenize(text):
 
     tokens = []
 
-    tag_soup = re.compile(r'([^<]*)(<!--.*?--\s*>|<[^>]*>)', re.S)
+    tag_soup = re.compile(r'''
+        ([^<]*)                     # Any text before a tag
+        (                           # The tag itself (a comment or a tag)
+            <!--.*?--\s*>           # HTML comment
+            |                       # OR
+            <                       # Opening angle bracket
+            (?:                     # Non-capturing group (repeated):
+                [^>"']              #   Any char except >, ", or '
+                |                   #   OR
+                "[^"]*"             #   Double-quoted string
+                |                   #   OR
+                '[^']*'             #   Single-quoted string
+            )+                      # (repeated one or more times)
+            >                       # Closing angle bracket
+        )
+    ''', re.DOTALL | re.VERBOSE)
 
     token_match = tag_soup.match(text)
 
