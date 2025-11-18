@@ -171,6 +171,28 @@ document.write('<a href="' + href + '">' + linktext + "</a>");
 
         self.assertLess(end - start, 0.2)
 
+    def test_quotes_in_attributes_with_angle_brackets(self):
+
+        # Arrow function syntax
+        self.assertEqual(
+            sp('<div onclick="() => foo()">text</div>'),
+            '<div onclick="() => foo()">text</div>')
+
+        # Comparison operators
+        self.assertEqual(
+            sp('<div data-condition="a > b">text</div>'),
+            '<div data-condition="a > b">text</div>')
+
+        # Multiple attributes with > characters
+        self.assertEqual(
+            sp('<div data-x="a => b" data-y="c > d">text</div>'),
+            '<div data-x="a => b" data-y="c > d">text</div>')
+
+        # Single quotes too
+        self.assertEqual(
+            sp("<div data-fn='() => x'>text</div>"),
+            "<div data-fn='() => x'>text</div>")
+
 
 def load_tests(loader, tests, pattern):
 
